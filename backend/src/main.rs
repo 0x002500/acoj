@@ -1,19 +1,25 @@
-use rocket::serde::json::{serde_json::json, Json, Value};
+use rocket::serde::json::Json;
+use rocket::Build;
+use rocket::post;
+use rocket::routes;
+use rocket::tokio::sync::Mutex;
+use rocket::State;
+
+
 
 #[macro_use] extern crate rocket;
 
-//引用用于编译compiler     import the compiler for compile
-mod compiler;
-
-//定义提交结构体  define submit struct
+// Define the Submit struct
+#[derive(serde::Deserialize)]
 struct Submit {
     lang: String,
-    code: String
+    code: String,
 }
 
+// Define the Re struct
 struct Re {
     status: String,
-    wasm: String
+    wasm: String,
 }
 
 #[get("/")]
@@ -21,13 +27,24 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[post("/submit", format = "json", data = "<submit>")]
-fn submit() -> &'static str{
-    "Already post code"
+#[post("/submit", data = "<submit>")]
+async fn submit(submit: Json<Submit>, compiler: &State<Mutex<compiler::Compiler>>) -> Json<Re> {
+    // Process the submit data and return the result
+    let result = compiler.lock().await.compile(&submit.lang, &submit.code);
+    
+    // Create a Re instance with the result
+    let re = Re {
+        status: result.status,
+        wasm: result.wasm,
+    };
+
+    Json(re)
 }
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![index])
-    rocket::build().mount("/submit", routes![submit])
+    rocket::build()
+        .mount("/", routes![index])
+        .mount("/submit", routes![submit])
+        .manage(Mutex::new(compiler::Compiler::new()))
 }
