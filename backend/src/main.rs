@@ -14,6 +14,7 @@ use rocket::State;
 struct Submit {
     lang: String,
     code: String,
+    problem_id: i64
 }
 
 // Define the Re struct
@@ -28,17 +29,8 @@ fn index() -> &'static str {
 }
 
 #[post("/submit", data = "<submit>")]
-async fn submit(submit: Json<Submit>, compiler: &State<Mutex<compiler::Compiler>>) -> Json<Re> {
-    // Process the submit data and return the result
-    let result = compiler.lock().await.compile(&submit.lang, &submit.code);
-    
-    // Create a Re instance with the result
-    let re = Re {
-        status: result.status,
-        wasm: result.wasm,
-    };
-
-    Json(re)
+async fn submit(submit: Json<Submit>) -> Json<Re> {
+    "h"
 }
 
 #[launch]
@@ -46,5 +38,4 @@ fn rocket() -> _ {
     rocket::build()
         .mount("/", routes![index])
         .mount("/submit", routes![submit])
-        .manage(Mutex::new(compiler::Compiler::new()))
 }
