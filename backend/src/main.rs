@@ -1,13 +1,13 @@
 use rocket::serde::json::Json;
-use rocket::Build;
 use rocket::post;
 use rocket::routes;
-use rocket::tokio::sync::Mutex;
-use rocket::State;
-
-
 
 #[macro_use] extern crate rocket;
+
+//import the other parts of backend
+mod init;
+mod compiler;
+mod judge;
 
 // Define the Submit struct
 #[derive(serde::Deserialize)]

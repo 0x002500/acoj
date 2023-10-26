@@ -1,7 +1,8 @@
 #include<iostream>
 using namespace std;
 
-int main() {
-    cout << "hello world" << endl;
+int main()
+{
+    cout << "day << whyday";
     return 0;
 }
