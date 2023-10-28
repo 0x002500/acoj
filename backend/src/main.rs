@@ -1,15 +1,13 @@
+use rocket::{Build, Rocket};
 use rocket::serde::json::Json;
-use rocket::post;
-use rocket::routes;
+use post;
 
-#[macro_use] extern crate rocket;
-
-//import the other parts of backend
 mod init;
 mod compiler;
 mod judge;
 
-// Define the Submit struct
+#[macro_use] extern crate rocket;
+
 #[derive(serde::Deserialize)]
 struct Submit {
     lang: String,
@@ -17,7 +15,6 @@ struct Submit {
     problem_id: i64
 }
 
-// Define the Re struct
 struct Re {
     status: String,
     wasm: String,
@@ -30,11 +27,11 @@ fn index() -> &'static str {
 
 #[post("/submit", data = "<submit>")]
 async fn submit(submit: Json<Submit>) -> Json<Re> {
-    "h"
+    "hello"
 }
 
 #[launch]
-fn rocket() -> _ {
+fn rocket() -> Rocket<Build> {
     rocket::build()
         .mount("/", routes![index])
         .mount("/submit", routes![submit])
