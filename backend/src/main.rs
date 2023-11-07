@@ -1,20 +1,24 @@
-use rocket::{Build, Rocket};
-use rocket::serde::json::Json;
 use post;
+use rocket::serde::{Deserialize, Serialize, json::Json};
+use rocket::{Build, Rocket};
+use rocket_contrib::json::Json as Json2;
 
-mod init;
 mod compiler;
+mod init;
 mod judge;
 
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
 #[derive(serde::Deserialize)]
+#[serde(crate = "rocket::serde")]
 struct Submit {
     lang: String,
     code: String,
-    problem_id: i64
+    problem_id: i64,
 }
 
+#[derive(serde::Serialize)]
 struct Re {
     status: String,
     wasm: String,
@@ -25,14 +29,19 @@ fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[post("/submit", data = "<submit>")]
+#[post("/submit", format = "json", data = "<submit>")]
 async fn submit(submit: Json<Submit>) -> Json<Re> {
-    "hello"
+    let result = Re {
+        status: "success".to_string(),
+        wasm: "compiled_wasm_code".to_string(),
+    };
+    
+    Json(result)
 }
 
 #[launch]
 fn rocket() -> Rocket<Build> {
     rocket::build()
         .mount("/", routes![index])
-        .mount("/submit", routes![submit])
+        .mount("/", routes![submit])
 }
