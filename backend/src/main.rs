@@ -1,7 +1,6 @@
 use post;
 use rocket::serde::{Deserialize, Serialize, json::Json};
 use rocket::{Build, Rocket};
-use rocket_contrib::json::Json as Json2;
 
 mod compiler;
 mod init;
