@@ -2,7 +2,6 @@ use post;
 use rocket::serde::{Deserialize, Serialize, json::Json};
 use rocket::{Build, Rocket};
 
-mod compiler;
 mod init;
 mod judge;
 
