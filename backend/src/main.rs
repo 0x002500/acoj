@@ -3,7 +3,7 @@ use rocket::serde::{Deserialize, Serialize, json::Json};
 use rocket::{Build, Rocket};
 
 mod init;
-mod judge;
+mod judger;
 
 #[macro_use]
 extern crate rocket;
