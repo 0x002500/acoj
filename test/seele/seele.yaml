@@ -1,0 +1,38 @@
+reporter:
+  # Seele 提供了全局变量 DATA 表示任务执行状态
+  javascript: |
+    const date = new Date();
+    return {
+      report: {
+        message: "Hello at " + date,
+        type: DATA.steps.prepare.status
+      }
+    }
+ 
+steps:
+  prepare:
+    action: "seele/add-file@1"
+    files:
+      # 将下列内容添加为 `main.c` 文件，也可以通过 url 提供文件内容
+      - path: "main.c"
+        plain: |
+          #include <stdio.h>
+          int main(void) {
+            printf("Hello, world!\n");
+            return 0;
+          }
+ 
+  compile:
+    action: "seele/run-judge/compile@1"
+    # 在 gcc 11-bullseye 镜像中执行编译命令
+    # Seele 默认会从 https://hub.docker.com 中下载容器镜像
+    image: "gcc:11-bullseye"
+    command: "gcc -O2 -Wall main.c -o main"
+    sources: ["main.c"]
+    saves: ["main"]
+ 
+  run:
+    action: "seele/run-judge/run@1"
+    image: "gcc:11-bullseye"
+    command: "main"
+    files: ["main"]
