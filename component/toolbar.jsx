@@ -1,7 +1,10 @@
+import "next/link"
+
 export default function Toolbar() {
     return (
-        <div>
-            <h1>Toolbar</h1>
-        </div>
+        <main>
+            /* <!-- kao zui zuo oj tu pian --> */
+
+        </main>
     )
 }
